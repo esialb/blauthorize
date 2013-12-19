@@ -28,4 +28,8 @@
 			</plugin>
 		</plugins>
 	</build>
+	<modules>
+		<module>../blauthorize-client</module>
+		<module>../blauthorize-http</module>
+	</modules>
 </project>
