@@ -15,6 +15,8 @@ public class HttpBlauthorization implements Blauthorization {
 	protected String groupSecret;
 	
 	public HttpBlauthorization(URL url, String authGroup, String groupSecret) {
+		if(url == null || authGroup == null || groupSecret == null)
+			throw new NullPointerException();
 		this.url = url;
 		this.authGroup = authGroup;
 		this.groupSecret = groupSecret;
