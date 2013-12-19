@@ -8,6 +8,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+
 public class HttpBlauthorization implements Blauthorization {
 	
 	protected URL url;
@@ -32,12 +35,16 @@ public class HttpBlauthorization implements Blauthorization {
 			try {
 				http.setDoInput(true);
 				http.setDoOutput(true);
-
-				PrintStream w = new PrintStream(http.getOutputStream(), true, "UTF-8");
-				w.print("authGroup=" + URLEncoder.encode(authGroup, "UTF-8"));
-				w.print("&groupSecret=" + URLEncoder.encode(groupSecret, "UTF-8"));
-				w.print("&authToken=" + URLEncoder.encode(authToken, "UTF-8"));
-				w.flush();
+				
+				JsonFactory jf = new JsonFactory();
+				JsonGenerator j = jf.createGenerator(http.getOutputStream());
+				
+				j.writeStartObject();
+				j.writeObjectField("authGroup", authGroup);
+				j.writeObjectField("groupSecret", groupSecret);
+				j.writeObjectField("authToken", authToken);
+				j.writeEndObject();
+				j.flush();
 
 				InputStream i = http.getInputStream();
 				byte[] b = new byte[1024];
