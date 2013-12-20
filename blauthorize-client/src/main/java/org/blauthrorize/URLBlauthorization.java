@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
@@ -15,9 +16,9 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
-public class FileBlauthorization implements MutableBlauthorization {
+public class URLBlauthorization implements Blauthorization {
 
-	protected File file;
+	protected URL url;
 	
 	protected Map<String, String[]> loadGroups(InputStream in) throws IOException {
 		Map<String, String[]> groups = new TreeMap<String, String[]>();
@@ -39,7 +40,7 @@ public class FileBlauthorization implements MutableBlauthorization {
 		Map<String, String[]> groups;
 		
 		try {
-			groups = loadGroups(new FileInputStream(file));
+			groups = loadGroups(url.openStream());
 		} catch(IOException ioe) {
 			throw new RuntimeException(ioe);
 		}
@@ -58,12 +59,6 @@ public class FileBlauthorization implements MutableBlauthorization {
 		}
 		
 		return authorized.contains(authGroup);
-	}
-
-	@Override
-	public void setAuthorized(String authToken, String authGroup, boolean authorized) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
