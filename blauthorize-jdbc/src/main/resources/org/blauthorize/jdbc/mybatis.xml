@@ -14,4 +14,10 @@
 			</dataSource>
 		</environment>
 	</environments>
+	
+	<mappers>
+		<mapper class="org.blauthorize.jdbc.IdMapper"/>
+		<mapper class="org.blauthorize.jdbc.GroupMapper"/>
+		<mapper class="org.blauthorize.jdbc.MembershipMapper"/>
+	</mappers>
 </configuration>
