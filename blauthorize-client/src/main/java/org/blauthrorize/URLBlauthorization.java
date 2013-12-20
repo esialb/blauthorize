@@ -46,6 +46,9 @@ public class URLBlauthorization implements Blauthorization {
 			groups.put(groupId, subgroups.toArray(new String[0]));
 		}
 		
+		if(j.getCurrentToken() != JsonToken.END_OBJECT)
+			throw new IllegalStateException();
+		
 		return groups;
 	}
 	
