@@ -64,6 +64,8 @@ public class URLBlauthorization implements Blauthorization {
 		pending.offer(authToken);
 		while(pending.size() > 0) {
 			String group = pending.poll();
+			if(group.equals(authGroup))
+				return true;
 			if(!authorized.add(group))
 				continue;
 			if(!groups.containsKey(group))
@@ -74,7 +76,7 @@ public class URLBlauthorization implements Blauthorization {
 			}
 		}
 		
-		return authorized.contains(authGroup);
+		return false;
 	}
 
 }
