@@ -11,9 +11,9 @@ public class SqlSessionFactoriesTest {
 		Properties props = new Properties();
 		
 		props.setProperty("driver", "org.apache.derby.jdbc.EmbeddedDriver");
-		props.setProperty("url", "jdbc:derby:target/sql-session-factories-test;create=true");
-		props.setProperty("username", "fake");
-		props.setProperty("password", "fake");
+		props.setProperty("url", "jdbc:derby:memory:sql-session-factories-test;create=true");
+		props.setProperty("username", "");
+		props.setProperty("password", "");
 		
 		SqlSessionFactories f = new SqlSessionFactories(props);
 		SqlSessionFactory fact = f.createSqlSessionFactory();

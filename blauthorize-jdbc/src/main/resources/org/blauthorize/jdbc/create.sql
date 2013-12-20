@@ -1,15 +1,14 @@
-create table ids(
-	'i' int not null
-);
-insert into ids(i) values (0);
-
 create table groups(
-	'gid' int not null,
-	'name' varchar(256) not null,
-	primary key ('gid', 'name')
+	gid int not null,
+	name varchar(256) not null,
+	primary key (gid, name)
 );
 create table memberships(
-	'parent_gid' int not null,
-	'child_gid' int not null,
-	primary key ('parent_gid', 'child_gid')
-)
+	parent_gid int not null,
+	child_gid int not null,
+	primary key (parent_gid, child_gid)
+);
+create table ids(
+	id int not null
+);
+insert into ids (id) values (0)

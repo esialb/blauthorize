@@ -12,8 +12,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 public class SqlSessionFactories {
-	private static final String CREATE;
-	private static final String CREATE_NOPK;
+	private static final String[] CREATE;
+	private static final String[] CREATE_NOPK;
 	static {
 		try {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -22,14 +22,14 @@ public class SqlSessionFactories {
 			for(int r = in.read(buf); r != -1; r = in.read(buf))
 				bout.write(buf, 0, r);
 			
-			CREATE = new String(bout.toByteArray(), "UTF-8");
+			CREATE = new String(bout.toByteArray(), "UTF-8").split(";");
 			
 			bout.reset();
 			in = SqlSessionFactories.class.getResourceAsStream("create_nopk.sql");
 			for(int r = in.read(buf); r != -1; r = in.read(buf))
 				bout.write(buf, 0, r);
 			
-			CREATE_NOPK = new String(bout.toByteArray(), "UTF-8");
+			CREATE_NOPK = new String(bout.toByteArray(), "UTF-8").split(";");
 		} catch(IOException ioe) {
 			throw new RuntimeException(ioe);
 		}
@@ -60,10 +60,13 @@ public class SqlSessionFactories {
 		SqlSession session = factory.openSession();
 		try {
 			try {
-				session.getConnection().nativeSQL(CREATE);
+				for(String sql : CREATE)
+					session.getConnection().prepareStatement(sql).execute();
 			} catch(SQLException e) {
-				session.getConnection().nativeSQL(CREATE_NOPK);
+				for(String sql : CREATE_NOPK)
+					session.getConnection().prepareStatement(sql).execute();
 			}
+			session.commit();
 		} finally {
 			session.close();
 		}
