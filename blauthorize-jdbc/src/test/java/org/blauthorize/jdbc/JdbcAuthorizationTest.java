@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.blauthrorize.MutableAuthorization;
+import org.blauthrorize.Authorization.Status;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,11 +34,11 @@ public class JdbcAuthorizationTest {
 	public void testCreateFileBlauthorization() throws Exception {
 		MutableAuthorization b = new JdbcAuthorization(fact);
 		
-		Assert.assertFalse(b.isAuthorized("robin", "qux"));
+		Assert.assertEquals(Status.NOT_APPLICABLE, b.isAuthorized("robin", "qux"));
 		b.setAuthorized("robin", "qux", true);
-		Assert.assertTrue(b.isAuthorized("robin", "qux"));
+		Assert.assertEquals(Status.AUTHORIZED, b.isAuthorized("robin", "qux"));
 		b.setAuthorized("robin", "qux", false);
-		Assert.assertFalse(b.isAuthorized("robin", "qux"));
+		Assert.assertEquals(Status.UNAUTHORIZED, b.isAuthorized("robin", "qux"));
 		
 	}
 }

@@ -51,12 +51,12 @@ public class URLAuthorization implements Authorization {
 	}
 	
 	@Override
-	public boolean isAuthorized(String authToken, String authGroup) {
+	public Status isAuthorized(String authToken, String authGroup) {
 		return isAuthorized(Collections.singleton(authToken), authGroup);
 	}
 	
 	@Override
-	public boolean isAuthorized(Set<String> authTokens, String authGroup) {
+	public Status isAuthorized(Set<String> authTokens, String authGroup) {
 		Map<String, List<String>> groups;
 		
 		try {
@@ -67,11 +67,19 @@ public class URLAuthorization implements Authorization {
 		
 		Deque<String> pending = new ArrayDeque<String>();
 		Set<String> authorized = new TreeSet<String>();
-		pending.addAll(authTokens);
+
+		for(String token : authTokens) {
+			if(groups.containsKey(token))
+				pending.add(token);
+		}
+		
+		if(pending.size() == 0)
+			return Status.NOT_APPLICABLE;
+		
 		while(pending.size() > 0) {
 			String group = pending.poll();
 			if(group.equals(authGroup))
-				return true;
+				return Status.AUTHORIZED;
 			if(!authorized.add(group))
 				continue;
 			if(!groups.containsKey(group))
@@ -82,7 +90,7 @@ public class URLAuthorization implements Authorization {
 			}
 		}
 		
-		return false;
+		return Status.UNAUTHORIZED;
 	}
 
 }

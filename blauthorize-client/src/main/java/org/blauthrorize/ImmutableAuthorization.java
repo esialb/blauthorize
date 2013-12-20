@@ -10,11 +10,11 @@ public class ImmutableAuthorization implements Authorization {
 		this.blauth = auth;
 	}
 
-	public boolean isAuthorized(String authToken, String authGroup) {
+	public Status isAuthorized(String authToken, String authGroup) {
 		return blauth.isAuthorized(authToken, authGroup);
 	}
 
-	public boolean isAuthorized(Set<String> authTokens, String authGroup) {
+	public Status isAuthorized(Set<String> authTokens, String authGroup) {
 		return blauth.isAuthorized(authTokens, authGroup);
 	}
 	

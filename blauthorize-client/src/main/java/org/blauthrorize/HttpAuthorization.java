@@ -26,14 +26,14 @@ public class HttpAuthorization implements Authorization {
 	}
 	
 	@Override
-	public boolean isAuthorized(String authToken, String authGroup) {
+	public Status isAuthorized(String authToken, String authGroup) {
 		return isAuthorized(Collections.singleton(authToken), authGroup);
 	}
 	
 	@Override
-	public boolean isAuthorized(Set<String> authTokens, String authGroup) {
+	public Status isAuthorized(Set<String> authTokens, String authGroup) {
 		if(!this.authGroup.equals(authGroup))
-			return false;
+			return Status.NOT_APPLICABLE;
 		
 		try {
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -61,7 +61,7 @@ public class HttpAuthorization implements Authorization {
 				for(int r = i.read(b); r != -1; r = i.read(b))
 					buf.write(b, 0, r);
 				
-				return Boolean.parseBoolean(new String(buf.toByteArray(), "UTF-8"));
+				return Status.valueOf(new String(buf.toByteArray(), "UTF-8"));
 			} finally {
 				http.disconnect();
 			}

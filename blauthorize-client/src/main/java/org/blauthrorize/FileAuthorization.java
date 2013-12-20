@@ -50,14 +50,12 @@ implements MutableAuthorization {
 			} finally {
 				in.close();
 			}
-			if(authorized && !groups.containsKey(authToken))
+			if(!groups.containsKey(authToken))
 				groups.put(authToken, new ArrayList<String>());
 			if(authorized && !groups.get(authToken).contains(authGroup))
 				groups.get(authToken).add(authGroup);
 			else if(!authorized && groups.get(authToken).contains(authGroup))
 				groups.get(authToken).remove(authGroup);
-			if(!authorized && groups.get(authToken).size() == 0)
-				groups.remove(authToken);
 			OutputStream out = new FileOutputStream(file);
 			try {
 				writeGroups(out, groups);

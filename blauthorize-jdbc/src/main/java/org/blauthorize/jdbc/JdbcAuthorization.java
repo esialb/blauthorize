@@ -23,12 +23,12 @@ public class JdbcAuthorization implements MutableAuthorization {
 	}
 	
 	@Override
-	public boolean isAuthorized(String authToken, String authGroup) {
+	public Status isAuthorized(String authToken, String authGroup) {
 		return isAuthorized(Collections.singleton(authToken), authGroup);
 	}
 	
 	@Override
-	public boolean isAuthorized(Set<String> authTokens, String authGroup) {
+	public Status isAuthorized(Set<String> authTokens, String authGroup) {
 		SqlSession session = fact.openSession();
 		try {
 			Set<Integer> authTokenIds = new TreeSet<Integer>();
@@ -39,9 +39,12 @@ public class JdbcAuthorization implements MutableAuthorization {
 					authTokenIds.add(g.getGid());
 			}
 			
+			if(authTokenIds.size() == 0)
+				return Status.NOT_APPLICABLE;
+			
 			JdbcGroup g = session.getMapper(GroupMapper.class).forName(authGroup);
 			if(g == null)
-				return false;
+				return Status.UNAUTHORIZED;
 			Integer authGroupId = g.getGid();
 			
 			Deque<Integer> pending = new ArrayDeque<Integer>();
@@ -53,7 +56,7 @@ public class JdbcAuthorization implements MutableAuthorization {
 			while(pending.size() > 0) {
 				Integer group = pending.poll();
 				if(group.intValue() == authGroupId.intValue())
-					return true;
+					return Status.AUTHORIZED;
 				if(!authorized.add(group))
 					continue;
 
@@ -63,7 +66,7 @@ public class JdbcAuthorization implements MutableAuthorization {
 				}
 			}
 			
-			return false;
+			return Status.UNAUTHORIZED;
 		} finally {
 			session.close();
 		}
