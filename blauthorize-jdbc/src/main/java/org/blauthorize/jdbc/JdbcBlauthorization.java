@@ -80,6 +80,7 @@ public class JdbcBlauthorization implements MutableBlauthorization {
 				ag.setGid(ids.get());
 				ids.set(ag.getGid() + 1);
 				groups.insert(ag);
+				session.commit();
 			}
 			
 			if(gg == null) {
@@ -88,13 +89,19 @@ public class JdbcBlauthorization implements MutableBlauthorization {
 				gg.setGid(ids.get());
 				ids.set(gg.getGid() + 1);
 				groups.insert(gg);
+				session.commit();
 			}
 			
 			JdbcMembership m = new JdbcMembership();
 			m.setParent_gid(ag.getGid());
 			m.setChild_gid(gg.getGid());
-			if(members.forMembership(m) == null)
+			if(authorized && members.forMembership(m) == null) {
 				members.insert(m);
+				session.commit();
+			} else if(!authorized && members.forMembership(m) != null) {
+				members.delete(m);
+				session.commit();
+			}
 		} finally {
 			session.close();
 		}
