@@ -1,5 +1,5 @@
 package org.blauthrorize;
 
-public interface MutableBlauthorization extends Blauthorization {
+public interface MutableAuthorization extends Authorization {
 	public void setAuthorized(String authToken, String authGroup, boolean authorized);
 }

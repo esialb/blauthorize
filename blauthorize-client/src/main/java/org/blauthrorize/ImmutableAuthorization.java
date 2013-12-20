@@ -2,11 +2,11 @@ package org.blauthrorize;
 
 import java.util.Set;
 
-public class ImmutableBlauthorization implements Blauthorization {
+public class ImmutableAuthorization implements Authorization {
 
-	private Blauthorization blauth;
+	private Authorization blauth;
 	
-	public ImmutableBlauthorization(Blauthorization auth) {
+	public ImmutableAuthorization(Authorization auth) {
 		this.blauth = auth;
 	}
 

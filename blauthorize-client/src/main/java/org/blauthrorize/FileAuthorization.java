@@ -14,13 +14,13 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
-public class FileBlauthorization 
-extends URLBlauthorization 
-implements MutableBlauthorization {
+public class FileAuthorization 
+extends URLAuthorization 
+implements MutableAuthorization {
 
 	protected File file;
 	
-	public FileBlauthorization(File file) throws MalformedURLException {
+	public FileAuthorization(File file) throws MalformedURLException {
 		super(file.toURI().toURL());
 		this.file = file;
 	}

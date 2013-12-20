@@ -11,13 +11,13 @@ import java.util.Set;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
-public class HttpBlauthorization implements Blauthorization {
+public class HttpAuthorization implements Authorization {
 	
 	protected URL url;
 	protected String authGroup;
 	protected String groupSecret;
 	
-	public HttpBlauthorization(URL url, String authGroup, String groupSecret) {
+	public HttpAuthorization(URL url, String authGroup, String groupSecret) {
 		if(url == null || authGroup == null || groupSecret == null)
 			throw new NullPointerException();
 		this.url = url;

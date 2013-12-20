@@ -17,9 +17,9 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
-public class URLBlauthorization implements Blauthorization {
+public class URLAuthorization implements Authorization {
 
-	public URLBlauthorization(URL url) {
+	public URLAuthorization(URL url) {
 		if(url == null)
 			throw new NullPointerException();
 		this.url = url;

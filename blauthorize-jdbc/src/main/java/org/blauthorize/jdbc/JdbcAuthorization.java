@@ -8,17 +8,17 @@ import java.util.TreeSet;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.blauthrorize.MutableBlauthorization;
+import org.blauthrorize.MutableAuthorization;
 
-public class JdbcBlauthorization implements MutableBlauthorization {
+public class JdbcAuthorization implements MutableAuthorization {
 
 	protected SqlSessionFactory fact;
 	
-	public JdbcBlauthorization(SqlSessionFactory sf) {
+	public JdbcAuthorization(SqlSessionFactory sf) {
 		this.fact = sf;
 	}
 	
-	public JdbcBlauthorization(SqlSessionFactories sf) {
+	public JdbcAuthorization(SqlSessionFactories sf) {
 		fact = sf.createSqlSessionFactory();
 	}
 	

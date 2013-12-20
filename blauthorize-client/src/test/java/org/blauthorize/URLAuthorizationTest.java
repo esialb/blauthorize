@@ -1,14 +1,14 @@
 package org.blauthorize;
 
-import org.blauthrorize.Blauthorization;
-import org.blauthrorize.URLBlauthorization;
+import org.blauthrorize.Authorization;
+import org.blauthrorize.URLAuthorization;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class URLBlauthorizationTest {
+public class URLAuthorizationTest {
 	@Test
 	public void testIsAuthorized() {
-		Blauthorization b = new URLBlauthorization(URLBlauthorizationTest.class.getResource("URLBlauthorizationTest.json"));
+		Authorization b = new URLAuthorization(URLAuthorizationTest.class.getResource("URLAuthorizationTest.json"));
 		Assert.assertTrue(b.isAuthorized("robin", "foo"));
 		Assert.assertTrue(b.isAuthorized("robin", "bar"));
 		Assert.assertTrue(!b.isAuthorized("robin", "qux"));
