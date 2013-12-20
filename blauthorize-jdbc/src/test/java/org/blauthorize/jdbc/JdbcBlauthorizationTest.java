@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.blauthorize.FileBlauthorizationTest;
-import org.blauthrorize.FileBlauthorization;
 import org.blauthrorize.MutableBlauthorization;
 import org.junit.Assert;
 import org.junit.Test;
