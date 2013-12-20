@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -24,6 +27,11 @@ public class HttpBlauthorization implements Blauthorization {
 	
 	@Override
 	public boolean isAuthorized(String authToken, String authGroup) {
+		return isAuthorized(Collections.singleton(authToken), authGroup);
+	}
+	
+	@Override
+	public boolean isAuthorized(Set<String> authTokens, String authGroup) {
 		if(!this.authGroup.equals(authGroup))
 			return false;
 		
@@ -39,7 +47,11 @@ public class HttpBlauthorization implements Blauthorization {
 				j.writeStartObject();
 				j.writeObjectField("authGroup", authGroup);
 				j.writeObjectField("groupSecret", groupSecret);
-				j.writeObjectField("authToken", authToken);
+				j.writeFieldName("authTokens");
+				j.writeStartArray();
+				for(String token : authTokens)
+					j.writeString(token);
+				j.writeEndArray();
 				j.writeEndObject();
 				j.flush();
 

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,11 @@ public class URLBlauthorization implements Blauthorization {
 	
 	@Override
 	public boolean isAuthorized(String authToken, String authGroup) {
+		return isAuthorized(Collections.singleton(authToken), authGroup);
+	}
+	
+	@Override
+	public boolean isAuthorized(Set<String> authTokens, String authGroup) {
 		Map<String, List<String>> groups;
 		
 		try {
@@ -61,7 +67,7 @@ public class URLBlauthorization implements Blauthorization {
 		
 		Deque<String> pending = new ArrayDeque<String>();
 		Set<String> authorized = new TreeSet<String>();
-		pending.offer(authToken);
+		pending.addAll(authTokens);
 		while(pending.size() > 0) {
 			String group = pending.poll();
 			if(group.equals(authGroup))
