@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -18,6 +21,12 @@ import com.fasterxml.jackson.core.JsonToken;
 
 public class URLBlauthorization implements Blauthorization {
 
+	public URLBlauthorization(URL url) {
+		if(url == null)
+			throw new NullPointerException();
+		this.url = url;
+	}
+	
 	protected URL url;
 	
 	protected Map<String, String[]> loadGroups(InputStream in) throws IOException {
@@ -25,11 +34,16 @@ public class URLBlauthorization implements Blauthorization {
 		
 		JsonFactory jf = new JsonFactory();
 		JsonParser j = jf.createParser(in);
-		j.nextToken();
+		if(j.nextToken() != JsonToken.START_OBJECT)
+			throw new IllegalStateException();
 		while(j.nextToken() == JsonToken.FIELD_NAME) {
 			String groupId = j.getCurrentName();
-			String[] subGroups = j.readValueAs(String[].class);
-			groups.put(groupId, subGroups);
+			if(j.nextToken() != JsonToken.START_ARRAY)
+				throw new IllegalStateException();
+			List<String> subgroups = new ArrayList<String>();
+			while(j.nextToken() != JsonToken.END_ARRAY)
+				subgroups.add(j.getText());
+			groups.put(groupId, subgroups.toArray(new String[0]));
 		}
 		
 		return groups;
@@ -51,6 +65,8 @@ public class URLBlauthorization implements Blauthorization {
 		while(pending.size() > 0) {
 			String group = pending.poll();
 			if(!authorized.add(group))
+				continue;
+			if(!groups.containsKey(group))
 				continue;
 			for(String g : groups.get(group)) {
 				if(!authorized.contains(g))
