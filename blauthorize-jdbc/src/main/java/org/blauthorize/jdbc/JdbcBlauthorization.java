@@ -16,6 +16,10 @@ public class JdbcBlauthorization implements MutableBlauthorization {
 
 	protected SqlSessionFactory fact;
 	
+	public JdbcBlauthorization(SqlSessionFactory sf) {
+		this.fact = sf;
+	}
+	
 	public JdbcBlauthorization(SqlSessionFactories sf) {
 		fact = sf.createSqlSessionFactory();
 	}
@@ -61,7 +65,39 @@ public class JdbcBlauthorization implements MutableBlauthorization {
 
 	@Override
 	public void setAuthorized(String authToken, String authGroup, boolean authorized) {
-		// TODO Auto-generated method stub
+		SqlSession session = fact.openSession();
+		try {
+			IdMapper ids = session.getMapper(IdMapper.class);
+			GroupMapper groups = session.getMapper(GroupMapper.class);
+			MembershipMapper members = session.getMapper(MembershipMapper.class);
+			
+			JdbcGroup ag = groups.forName(authToken);
+			JdbcGroup gg = groups.forName(authGroup);
+			
+			if(ag == null) {
+				ag = new JdbcGroup();
+				ag.setName(authToken);
+				ag.setGid(ids.get());
+				ids.set(ag.getGid() + 1);
+				groups.insert(ag);
+			}
+			
+			if(gg == null) {
+				gg = new JdbcGroup();
+				gg.setName(authGroup);
+				gg.setGid(ids.get());
+				ids.set(gg.getGid() + 1);
+				groups.insert(gg);
+			}
+			
+			JdbcMembership m = new JdbcMembership();
+			m.setParent_gid(ag.getGid());
+			m.setChild_gid(gg.getGid());
+			if(members.forMembership(m) == null)
+				members.insert(m);
+		} finally {
+			session.close();
+		}
 		
 	}
 	
