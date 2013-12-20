@@ -29,8 +29,8 @@ public class URLBlauthorization implements Blauthorization {
 	
 	protected URL url;
 	
-	protected Map<String, String[]> loadGroups(InputStream in) throws IOException {
-		Map<String, String[]> groups = new TreeMap<String, String[]>();
+	protected Map<String, List<String>> loadGroups(InputStream in) throws IOException {
+		Map<String, List<String>> groups = new TreeMap<String, List<String>>();
 		
 		JsonFactory jf = new JsonFactory();
 		JsonParser j = jf.createParser(in);
@@ -43,7 +43,7 @@ public class URLBlauthorization implements Blauthorization {
 			List<String> subgroups = new ArrayList<String>();
 			while(j.nextToken() != JsonToken.END_ARRAY)
 				subgroups.add(j.getText());
-			groups.put(groupId, subgroups.toArray(new String[0]));
+			groups.put(groupId, subgroups);
 		}
 		
 		if(j.getCurrentToken() != JsonToken.END_OBJECT)
@@ -54,7 +54,7 @@ public class URLBlauthorization implements Blauthorization {
 	
 	@Override
 	public boolean isAuthorized(String authToken, String authGroup) {
-		Map<String, String[]> groups;
+		Map<String, List<String>> groups;
 		
 		try {
 			groups = loadGroups(url.openStream());
