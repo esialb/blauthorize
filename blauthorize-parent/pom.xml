@@ -31,5 +31,6 @@
 	<modules>
 		<module>../blauthorize-client</module>
 		<module>../blauthorize-http</module>
+		<module>../blauthorize-jdbc</module>
 	</modules>
 </project>
