@@ -1,6 +1,7 @@
 create table groups(
 	gid int not null,
-	name varchar(256) not null
+	name varchar(256) not null,
+	secret varchar(256)
 );
 create table memberships(
 	parent_gid int not null,

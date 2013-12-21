@@ -23,12 +23,9 @@ public class JdbcAuthorization implements MutableAuthorization {
 	}
 	
 	@Override
-	public Status isAuthorized(String authToken, String authGroup) {
-		return isAuthorized(Collections.singleton(authToken), authGroup);
-	}
-	
-	@Override
-	public Status isAuthorized(Set<String> authTokens, String authGroup) {
+	public boolean isAuthorized(Set<String> authTokens, String authGroup, String groupSecret) {
+		groupSecret = String.valueOf(groupSecret);
+		
 		SqlSession session = fact.openSession();
 		try {
 			Set<Integer> authTokenIds = new TreeSet<Integer>();
@@ -40,11 +37,13 @@ public class JdbcAuthorization implements MutableAuthorization {
 			}
 			
 			if(authTokenIds.size() == 0)
-				return Status.NOT_APPLICABLE;
+				return false;
 			
 			JdbcGroup g = session.getMapper(GroupMapper.class).forName(authGroup);
 			if(g == null)
-				return Status.UNAUTHORIZED;
+				return false;
+			if(!groupSecret.equals(g.getSecret()))
+				return false;
 			Integer authGroupId = g.getGid();
 			
 			Deque<Integer> pending = new ArrayDeque<Integer>();
@@ -56,7 +55,7 @@ public class JdbcAuthorization implements MutableAuthorization {
 			while(pending.size() > 0) {
 				Integer group = pending.poll();
 				if(group.intValue() == authGroupId.intValue())
-					return Status.AUTHORIZED;
+					return true;
 				if(!authorized.add(group))
 					continue;
 
@@ -66,7 +65,7 @@ public class JdbcAuthorization implements MutableAuthorization {
 				}
 			}
 			
-			return Status.UNAUTHORIZED;
+			return false;
 		} finally {
 			session.close();
 		}
@@ -88,6 +87,7 @@ public class JdbcAuthorization implements MutableAuthorization {
 				ag.setName(authToken);
 				ag.setGid(ids.get());
 				ids.set(ag.getGid() + 1);
+				ag.setSecret("null");
 				groups.insert(ag);
 				session.commit();
 			}
@@ -97,6 +97,7 @@ public class JdbcAuthorization implements MutableAuthorization {
 				gg.setName(authGroup);
 				gg.setGid(ids.get());
 				ids.set(gg.getGid() + 1);
+				gg.setSecret("null");
 				groups.insert(gg);
 				session.commit();
 			}

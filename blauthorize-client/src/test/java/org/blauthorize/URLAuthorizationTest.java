@@ -1,8 +1,10 @@
 package org.blauthorize;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.blauthrorize.Authorization;
 import org.blauthrorize.URLAuthorization;
-import org.blauthrorize.Authorization.Status;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,9 +12,10 @@ public class URLAuthorizationTest {
 	@Test
 	public void testIsAuthorized() {
 		Authorization b = new URLAuthorization(URLAuthorizationTest.class.getResource("URLAuthorizationTest.json"));
-		Assert.assertEquals(Status.AUTHORIZED, b.isAuthorized("robin", "foo"));
-		Assert.assertEquals(Status.AUTHORIZED, b.isAuthorized("robin", "bar"));
-		Assert.assertEquals(Status.UNAUTHORIZED, b.isAuthorized("robin", "qux"));
+		Set<String> robin = Collections.singleton("robin");
+		Assert.assertEquals(true, b.isAuthorized(robin, "foo", null));
+		Assert.assertEquals(true, b.isAuthorized(robin, "bar", null));
+		Assert.assertEquals(false, b.isAuthorized(robin, "qux", null));
 
 	}
 }

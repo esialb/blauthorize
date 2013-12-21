@@ -3,6 +3,7 @@ package org.blauthorize.jdbc;
 public class JdbcGroup {
 	private Integer gid;
 	private String name;
+	private String secret;
 	
 	public Integer getGid() {
 		return gid;
@@ -15,6 +16,12 @@ public class JdbcGroup {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getSecret() {
+		return secret;
+	}
+	public void setSecret(String secret) {
+		this.secret = secret;
 	}
 	
 }

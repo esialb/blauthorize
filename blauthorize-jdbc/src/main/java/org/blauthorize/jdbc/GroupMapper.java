@@ -14,7 +14,7 @@ public interface GroupMapper {
 	@Select("select * from groups where gid = #{gid} and name = #{name}")
 	public JdbcGroup forGroup(JdbcGroup group);
 	
-	@Insert("insert into groups (gid, name) values (#{gid}, #{name})")
+	@Insert("insert into groups (gid, name, secret) values (#{gid}, #{name}, #{secret})")
 	public void insert(JdbcGroup group);
 	
 	@Delete("delete from groups where gid = #{gid}")

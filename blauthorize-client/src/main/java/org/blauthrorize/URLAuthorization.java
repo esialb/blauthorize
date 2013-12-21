@@ -51,12 +51,7 @@ public class URLAuthorization implements Authorization {
 	}
 	
 	@Override
-	public Status isAuthorized(String authToken, String authGroup) {
-		return isAuthorized(Collections.singleton(authToken), authGroup);
-	}
-	
-	@Override
-	public Status isAuthorized(Set<String> authTokens, String authGroup) {
+	public boolean isAuthorized(Set<String> authTokens, String authGroup, String groupSecret) {
 		Map<String, List<String>> groups;
 		
 		try {
@@ -74,12 +69,12 @@ public class URLAuthorization implements Authorization {
 		}
 		
 		if(pending.size() == 0)
-			return Status.NOT_APPLICABLE;
+			return false;
 		
 		while(pending.size() > 0) {
 			String group = pending.poll();
 			if(group.equals(authGroup))
-				return Status.AUTHORIZED;
+				return true;
 			if(!authorized.add(group))
 				continue;
 			if(!groups.containsKey(group))
@@ -90,7 +85,7 @@ public class URLAuthorization implements Authorization {
 			}
 		}
 		
-		return Status.UNAUTHORIZED;
+		return false;
 	}
 
 }

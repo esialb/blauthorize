@@ -1,9 +1,11 @@
 package org.blauthorize;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.blauthrorize.FileAuthorization;
 import org.blauthrorize.MutableAuthorization;
-import org.blauthrorize.Authorization.Status;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,12 +16,13 @@ public class FileAuthorizationTest {
 				FileUtils.toFile(
 						FileAuthorizationTest.class.getResource(
 								"FileAuthorizationTest.json")));
-		Assert.assertEquals(Status.AUTHORIZED, b.isAuthorized("robin", "foo"));
-		Assert.assertEquals(Status.UNAUTHORIZED, b.isAuthorized("robin", "qux"));
+		Set<String> robin = Collections.singleton("robin");
+		Assert.assertEquals(true, b.isAuthorized(robin, "foo", null));
+		Assert.assertEquals(false, b.isAuthorized(robin, "qux", null));
 		b.setAuthorized("robin", "qux", true);
-		Assert.assertEquals(Status.AUTHORIZED, b.isAuthorized("robin", "qux"));
+		Assert.assertEquals(true, b.isAuthorized(robin, "qux", null));
 		b.setAuthorized("robin", "qux", false);
-		Assert.assertEquals(Status.UNAUTHORIZED, b.isAuthorized("robin", "qux"));
+		Assert.assertEquals(false, b.isAuthorized(robin, "qux", null));
 		
 	}
 }

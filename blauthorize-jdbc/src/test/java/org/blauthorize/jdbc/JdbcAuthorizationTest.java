@@ -1,11 +1,12 @@
 package org.blauthorize.jdbc;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.blauthrorize.MutableAuthorization;
-import org.blauthrorize.Authorization.Status;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,11 +35,13 @@ public class JdbcAuthorizationTest {
 	public void testCreateFileBlauthorization() throws Exception {
 		MutableAuthorization b = new JdbcAuthorization(fact);
 		
-		Assert.assertEquals(Status.NOT_APPLICABLE, b.isAuthorized("robin", "qux"));
+		Set<String> robin = Collections.singleton("robin");
+		
+		Assert.assertEquals(false, b.isAuthorized(robin, "qux", null));
 		b.setAuthorized("robin", "qux", true);
-		Assert.assertEquals(Status.AUTHORIZED, b.isAuthorized("robin", "qux"));
+		Assert.assertEquals(true, b.isAuthorized(robin, "qux", null));
 		b.setAuthorized("robin", "qux", false);
-		Assert.assertEquals(Status.UNAUTHORIZED, b.isAuthorized("robin", "qux"));
+		Assert.assertEquals(false, b.isAuthorized(robin, "qux", null));
 		
 	}
 }

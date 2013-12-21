@@ -14,27 +14,15 @@ import com.fasterxml.jackson.core.JsonGenerator;
 public class HttpAuthorization implements Authorization {
 	
 	protected URL url;
-	protected String authGroup;
-	protected String groupSecret;
 	
-	public HttpAuthorization(URL url, String authGroup, String groupSecret) {
-		if(url == null || authGroup == null || groupSecret == null)
+	public HttpAuthorization(URL url) {
+		if(url == null)
 			throw new NullPointerException();
 		this.url = url;
-		this.authGroup = authGroup;
-		this.groupSecret = groupSecret;
 	}
 	
 	@Override
-	public Status isAuthorized(String authToken, String authGroup) {
-		return isAuthorized(Collections.singleton(authToken), authGroup);
-	}
-	
-	@Override
-	public Status isAuthorized(Set<String> authTokens, String authGroup) {
-		if(!this.authGroup.equals(authGroup))
-			return Status.NOT_APPLICABLE;
-		
+	public boolean isAuthorized(Set<String> authTokens, String authGroup, String groupSecret) {
 		try {
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
 			try {
@@ -61,7 +49,7 @@ public class HttpAuthorization implements Authorization {
 				for(int r = i.read(b); r != -1; r = i.read(b))
 					buf.write(b, 0, r);
 				
-				return Status.valueOf(new String(buf.toByteArray(), "UTF-8"));
+				return Boolean.valueOf(new String(buf.toByteArray(), "UTF-8"));
 			} finally {
 				http.disconnect();
 			}
